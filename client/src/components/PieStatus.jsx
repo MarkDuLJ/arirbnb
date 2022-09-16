@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Pie from "@visx/shape/lib/shapes/Pie";
 import { scaleOrdinal } from "@visx/scale";
 import { Group } from "@visx/group";
-import { GradientLightgreenGreen } from "@visx/gradient";
+import { GradientSteelPurple } from "@visx/gradient";
 import letterFrequency from "@visx/mock-data/lib/mocks/letterFrequency";
 // import browserUsage from "@visx/mock-data/lib/mocks/browserUsage";
 import { animated, useTransition, interpolate } from "@react-spring/web";
@@ -54,20 +54,11 @@ const generateAttObjs = (arr) =>
 
 
 const letters= letterFrequency.slice(0, 4);
+console.log(letters)
 // const browserNames = Object.keys(browserUsage[0]).filter((k) => k !== 'date');
 const newlist =generateAttObjs(coins)
 const browserNames = Object.keys(newlist);
-// const browserNames = [
-//   "OUTSIDE DIAMETER",
-//   "RADIAL CLEARANCE",
-//   "TYPE",
-//   "STYLE",
-//   "WIDTH",
-//   "SERIES",
-//   "CAGE MATERIAL",
-//   "ROW",
-//   "INSIDE DIAMETER",
-// ];
+
 const browsers = browserNames.map((name) => ({
   label: name,
   usage: Number(newlist[name].total),
@@ -118,7 +109,7 @@ const PieStatus = ({width, height, margin = defaultMargin, animate = true}) => {
     <>
       <h2>CHART</h2>
       <svg width={width} height={height}>
-        <GradientLightgreenGreen id="visx-pie-gradient" />
+        <GradientSteelPurple id="visx-pie-gradient" />
         <rect
           rx={14}
           width={width}
@@ -144,7 +135,7 @@ const PieStatus = ({width, height, margin = defaultMargin, animate = true}) => {
                 animate={animate}
                 getKey={(arc) => {
                   // return arc.data.label;
-                 return `${arc.data.label}:${arc.data.usage}`
+                  return `${arc.data.label}:${arc.data.usage}`;
                 }}
                 onClickDatum={({ data: { label } }) =>
                   animate &&
