@@ -54,4 +54,4 @@ const generateAttObjs=(arr)=>arr.reduce((a,c)=>{
 
 
 
-console.log(generateAttObjs(coins).reduce((a,c)=>a+c.total,0))
+console.log(generateAttObjs(coins))
