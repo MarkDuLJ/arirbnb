@@ -40,18 +40,22 @@ const generateAttObjs=(arr)=>arr.reduce((a,c)=>{
     // console.log(attName,attStatus, count)
     if(attName){
 
-        if(!a[attName]){
-            a[attName]={total:0,status:{}}
+        if(!a[0][attName]){
+            a[0][attName]={total:0,status:{}}
         }
-        if(!a[attName].status[attStatus]){
-            a[attName].status[attStatus]=0 
+        if (!a[0][attName].status[attStatus]){
+            a[0][attName].status[attStatus]=0 
         }
-        a[attName].total+=count
-        a[attName].status[attStatus] += count 
+        if (!a[1][`${attStatus}`]) { a[1][`${attStatus}`] =0}
+        a[0][attName].total+=count
+        a[0][attName].status[attStatus] += count 
+        a[1][`${attStatus}`] += count 
     }
     return a
-},{})
+},[{},{}])
 
+const [, total] = generateAttObjs(coins)
+const dictionary={"0":"complete","1":"require","2":"undefined","-1":"yyy"}
 
-
-console.log(generateAttObjs(coins))
+const getStatusFormat = (obj) => Object.keys(obj).map(k => ({ letter: dictionary[k], frequency: total[k] }))
+console.log(getStatusFormat(total))

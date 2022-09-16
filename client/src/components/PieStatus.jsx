@@ -40,23 +40,39 @@ const generateAttObjs = (arr) =>
     } = c;
     // console.log(attName,attStatus, count)
     if (attName) {
-      if (!a[attName]) {
-        a[attName] = { total: 0, status: {} };
-      }
-      if (!a[attName].status[attStatus]) {
-        a[attName].status[attStatus] = 0;
-      }
-      a[attName].total += count;
-      a[attName].status[attStatus] += count;
+     if (!a[0][attName]) {
+       a[0][attName] = { total: 0, status: {} };
+     }
+     if (!a[0][attName].status[attStatus]) {
+       a[0][attName].status[attStatus] = 0;
+     }
+     if (!a[1][`${attStatus}`]) {
+       a[1][`${attStatus}`] = 0;
+     }
+     a[0][attName].total += count;
+     a[0][attName].status[attStatus] += count;
+     a[1][`${attStatus}`] += count; 
     }
     return a;
-  }, {});
+  }, [{},{}]);
 
 
-const letters= letterFrequency.slice(0, 4);
-console.log(letters)
+  const [newlist,totalStatus] =generateAttObjs(coins)
+  const dictionary={"0":"complete","1":"require","2":"undefined","-1":"yyy"}
+
+const getStatusFormat = (obj) => Object.keys(obj).map(k => ({ letter: dictionary[k], frequency: obj[k] }))
+
+// const letters= letterFrequency.slice(0, 4);
+const letters = getStatusFormat(totalStatus)
+// [
+//   {letter: 'completed', frequency: 300 },
+//   {letter: 'required', frequency:10 },
+//   {letter:"undefined",frequency:100 },
+//   {letter: "xxx",frequency:30 },
+//   {letter: "yyyy",frequency:90 },
+// ];
+console.log(getStatusFormat(newlist["INSIDE DIAMETER"].status));
 // const browserNames = Object.keys(browserUsage[0]).filter((k) => k !== 'date');
-const newlist =generateAttObjs(coins)
 const browserNames = Object.keys(newlist);
 
 const browsers = browserNames.map((name) => ({
@@ -89,6 +105,7 @@ const getLetterFrequencyColor = scaleOrdinal({
     "rgba(93,30,91,0.8)",
     "rgba(93,30,91,0.6)",
     "rgba(93,30,91,0.4)",
+    "rgba(93,30,91,0.2)",
   ],
 });
 
@@ -97,6 +114,7 @@ const defaultMargin = { top: 20, right: 20, bottom: 20, left: 20 };
 const PieStatus = ({width, height, margin = defaultMargin, animate = true}) => {
   const [selectedBrowser, setSelectedBrowser] =    useState (null );
   const [selectedAlphabetLetter, setSelectedAlphabetLetter] =    useState (null);
+  // console.log(selectedBrowser,selectedAlphabetLetter);
 
    const innerWidth = width - margin.left - margin.right;
    const innerHeight = height - margin.top - margin.bottom;
@@ -149,10 +167,8 @@ const PieStatus = ({width, height, margin = defaultMargin, animate = true}) => {
           </Pie>
           <Pie
             data={
-              selectedAlphabetLetter
-                ? letters.filter(
-                    ({ letter }) => letter === selectedAlphabetLetter
-                  )
+              selectedBrowser
+                ? getStatusFormat(newlist[selectedBrowser].status)
                 : letters
             }
             pieValue={frequency}
@@ -163,7 +179,9 @@ const PieStatus = ({width, height, margin = defaultMargin, animate = true}) => {
               <AnimatedPie
                 {...pie}
                 animate={animate}
-                getKey={({ data: { letter } }) => letter}
+                getKey={({ data: { letter, frequency } }) =>
+                  `${letter}:${frequency}`
+                }
                 onClickDatum={({ data: { letter } }) =>
                   animate &&
                   setSelectedAlphabetLetter(
